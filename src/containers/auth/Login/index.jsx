@@ -83,12 +83,14 @@ const Login = () => {
         <Logo src={logo} alt="Logo" width={120} />
         <Form.Item
           name="phone"
+          initialValue={'0999999999'}
           rules={[{ required: true, message: 'Vui lòng nhập SĐT' }]}
         >
           <Input placeholder="Số điện thoại" size="large" autoComplete="off" />
         </Form.Item>
         <Form.Item
           name="password"
+          initialValue={'123123'}
           rules={[
             { required: true, message: 'Vui lòng nhập mật khẩu' },
             {
