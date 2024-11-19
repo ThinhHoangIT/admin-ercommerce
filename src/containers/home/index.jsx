@@ -1,5 +1,5 @@
-import { useMemo } from 'react';
-import { Dropdown, Empty } from 'antd';
+import { useEffect, useMemo } from 'react';
+import { Dropdown, Empty, message } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { FaUserCircle, FaChevronDown } from 'react-icons/fa';
 import styled from 'styled-components';
@@ -10,6 +10,7 @@ import {
   clearAllState,
   selectCurrentMenu,
   selectCurrentUser,
+  selectIsPermission,
 } from '@/store/app';
 import colors from '@/theme/color';
 import storage from '@/storage';
@@ -25,6 +26,7 @@ import Category from '../manage/category';
 import Brand from '../manage/brand';
 import Order from '../manage/order';
 import Coupon from '../manage/coupon';
+import api from '@/services/api';
 
 const EmptyLayout = styled.div({
   width: '100%',
@@ -69,6 +71,7 @@ const getContentLayout = key => {
 
 const Home = () => {
   const dispatch = useDispatch();
+  const [messageApi, contextHolder] = message.useMessage();
 
   const currentUser = useSelector(selectCurrentUser);
   const currentMenu = useSelector(selectCurrentMenu);
@@ -90,6 +93,28 @@ const Home = () => {
     [],
   );
 
+  const isPermission = useSelector(selectIsPermission);
+
+  useEffect(() => {
+    if (!currentMenu) {
+      return;
+    }
+    if (!isPermission) {
+      messageApi.warning('Bạn không có quyền truy cập');
+    }
+  }, [currentMenu]);
+
+  useEffect(() => {
+    api
+      .getRole(currentUser?.role)
+      .then(response => {
+        dispatch(setUserRoleFeatures(response.data));
+      })
+      .catch(error => {
+        console.log('Get role error', error);
+      });
+  }, []);
+
   return (
     <AppLayout>
       <AppSider />
@@ -106,8 +131,8 @@ const Home = () => {
         <AppMenu />
       </MenuSider>
       {getContentLayout(currentMenu)}
+      {/* {isPermission && getContentLayout(currentMenu)} */}
     </AppLayout>
   );
 };
-
 export default Home;

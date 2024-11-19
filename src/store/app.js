@@ -6,6 +6,7 @@ export const appSlice = createSlice({
     currentUser: null,
     currentModule: 'ui',
     currentMenu: '',
+    role: [],
   },
   reducers: {
     setCurrentUser: (state, action) => {
@@ -17,6 +18,9 @@ export const appSlice = createSlice({
     setCurrentMenu: (state, action) => {
       state.currentMenu = action.payload;
     },
+    setUserRoleFeatures: (state, action) => {
+      state.role = action.payload?.accessibleFeatures;
+    },
     clearAllState: (state, action) => {
       state.currentUser = null;
       state.currentMenu = null;
@@ -27,6 +31,7 @@ export const appSlice = createSlice({
 export const {
   setCurrentUser,
   setCurrentMenu,
+  setUserRoleFeatures,
   setCurrentModule,
   clearAllState,
 } = appSlice.actions;
@@ -49,3 +54,13 @@ export const selectCurrentModule = createDraftSafeSelector(
   selectApp,
   app => app.currentModule,
 );
+
+export const selectUserRoleFeatures = createDraftSafeSelector(
+  selectApp,
+  app => app.role,
+);
+
+export const selectIsPermission = createDraftSafeSelector(selectApp, app => {
+  const isAdmin = app.role?.includes('admin');
+  return isAdmin || app.role?.includes(app.currentMenu);
+});

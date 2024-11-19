@@ -15,6 +15,12 @@ const localeFields = {
   name: 'Tên loại SP',
 };
 
+export const Container = styled(Layout.Content)({
+  width: '100%',
+  height: '100vh',
+  overflow: 'auto',
+});
+
 const ProductImage = styled(Image)({
   maxHeight: 100,
   maxWidth: 100,
@@ -158,7 +164,7 @@ const Category = () => {
         showDetailText={detail?.id}
         onMenuClick={backToTable}
       />
-      <Layout.Content>
+      <Container>
         {detail?.id ? (
           <Detail
             data={detail}
@@ -185,7 +191,7 @@ const Category = () => {
           data={logs}
           localeFields={localeFields}
         />
-      </Layout.Content>
+      </Container>
     </Layout>
   );
 };
